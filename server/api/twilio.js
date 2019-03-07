@@ -1,10 +1,37 @@
 const AccessToken = require('twilio').jwt.AccessToken
 const VideoGrant = AccessToken.VideoGrant
+const router = require('express').Router()
+var faker = require('faker')
+module.exports = router
 
 // Used when generating any kind of Access Token
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID
-const twilioApiKey = process.env.TWILIO_SID
-const twilioApiSecret = process.env.TWILIO_SECRET
+const twilioApiKey = process.env.TWILIO_API_KEY
+const twilioApiSecret = process.env.TWILIO_API_SECRET
+
+// Endpoint to generate access token
+router.get('/token', (req, res) => {
+  const identity = faker.name.findName()
+
+  // Create an access token which we will sign and return to the client,
+  // containing the grant we just created
+  const token = new AccessToken(twilioAccountSid, twilioApiKey, twilioApiSecret)
+
+  // Assign the generated identity to the token
+  token.identity = identity
+
+  const grant = new VideoGrant()
+  // Grant token access to the Video API features
+  token.addGrant(grant)
+
+  // Serialize the token to a JWT string and include it in a JSON response
+  res.send({
+    identity: identity,
+    token: token.toJwt()
+  })
+})
+
+/*
 
 // Create an access token which we will sign and return to the client,
 // containing the grant we just created
@@ -110,3 +137,5 @@ room.on('participantConnected', participant => {
 room.on('participantDisconnected', participant => {
   console.log(`Participant disconnected: ${participant.identity}`)
 })
+
+*/
