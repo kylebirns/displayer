@@ -8,10 +8,6 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
 
 export default class VideoMain extends Component {
-  constructor(props) {
-    super()
-  }
-
   render() {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
