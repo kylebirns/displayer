@@ -2,34 +2,32 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
+import Button from 'react-bootstrap/Button'
 
 /**
  * COMPONENT
  */
-const AuthForm = props => {
-  const {name, displayName, handleSubmit, error} = props
-
+const AuthForm = () => {
   return (
     <div>
-      <form onSubmit={handleSubmit} name={name}>
-        <div>
-          <label htmlFor="email">
-            <small>Email</small>
-          </label>
-          <input name="email" type="text" />
-        </div>
-        <div>
-          <label htmlFor="password">
-            <small>Password</small>
-          </label>
-          <input name="password" type="password" />
-        </div>
-        <div>
-          <button type="submit">{displayName}</button>
-        </div>
-        {error && error.response && <div> {error.response.data} </div>}
-      </form>
-      <a href="/auth/google">{displayName} with Google</a>
+      <div id="googleAuth">
+        <form method="get" action="/auth/google">
+          <div>
+            <Button variant="primary" size="lg" block>
+              Login with Google
+            </Button>
+          </div>
+        </form>
+      </div>
+      <div id="facebookAuth">
+        <form method="get" action="/auth/facebook">
+          <div>
+            <Button variant="secondary" size="lg" block>
+              Login with Facebook
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
@@ -75,9 +73,3 @@ export const Signup = connect(mapSignup, mapDispatch)(AuthForm)
 /**
  * PROP TYPES
  */
-AuthForm.propTypes = {
-  name: PropTypes.string.isRequired,
-  displayName: PropTypes.string.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  error: PropTypes.object
-}
