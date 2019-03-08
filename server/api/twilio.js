@@ -2,6 +2,7 @@ const AccessToken = require('twilio').jwt.AccessToken
 const VideoGrant = AccessToken.VideoGrant
 const router = require('express').Router()
 var faker = require('faker')
+
 module.exports = router
 
 //******* Need to replace identity with user at some point *******/
@@ -13,7 +14,8 @@ const twilioApiSecret = process.env.TWILIO_API_SECRET
 
 // Endpoint to generate access token
 router.get('/token', (req, res) => {
-  const identity = faker.name.findName()
+  // const identity = faker.name.findName()
+  const identity = req.user.name
 
   // Create an access token which we will sign and return to the client,
   // containing the grant we just created

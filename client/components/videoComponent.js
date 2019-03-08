@@ -6,6 +6,9 @@ import Button from 'react-bootstrap/Button'
 import TextField from 'material-ui/TextField'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import {first} from 'lodash'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -148,34 +151,6 @@ export default class VideoComponent extends Component {
     })
   }
 
-  shareScreen = async () => {
-    try {
-      const {screenTrack} = this.state
-
-      if (!screenTrack) {
-        const localVideoTrack = await Video.createLocalVideoTrack()
-        const stream = await navigator.mediaDevices.getDisplayMedia({
-          video: true
-        })
-        const newScreenTrack = first(stream.getVideoTracks())
-
-        this.setState({
-          screenTrack: new Video.LocalVideoTrack(newScreenTrack)
-        })
-
-        this.state.activeRoom.localParticipant.publishTrack(newScreenTrack)
-        this.state.activeRoom.localParticipant.unpublishTrack(localVideoTrack)
-      } else {
-        this.state.activeRoom.localParticipant.unpublishTrack(screenTrack)
-        this.state.activeRoom.localParticipant.publishTrack(localVideoTrack)
-        // this.stopScreenTrack()
-      }
-    } catch (error) {
-      // this.stopScreenTrack()
-      alert(error.message)
-    }
-  }
-
   leaveRoom() {
     this.state.activeRoom.disconnect()
     this.setState({
@@ -185,7 +160,30 @@ export default class VideoComponent extends Component {
     })
   }
 
-  // stopScreenTrack = () => this.stopTrack('screenTrack')
+  shareScreen = () => {
+    let extensionId = process.env.EXTENSION_ID
+    return new Promise((resolve, reject) => {
+      const request = {
+        sources: ['screen']
+      }
+      chrome.runtime.sendMessage(extensionId, request, response => {
+        if (response && response.type === 'success') {
+          resolve({streamId: response.streamId})
+        } else {
+          reject(new Error('Could not get stream'))
+        }
+      })
+    }).then(response => {
+      return navigator.mediaDevices.getUserMedia({
+        video: {
+          mandatory: {
+            chromeMediaSource: 'desktop',
+            chromeMediaSourceId: response.streamId
+          }
+        }
+      })
+    })
+  }
 
   detachTracks(tracks) {
     tracks.forEach(track => {
@@ -207,7 +205,14 @@ export default class VideoComponent extends Component {
     */
     let showLocalTrack = this.state.localMediaAvailable ? (
       <div className="flex-item">
-        <div ref="localMedia" />{' '}
+        <Container>
+          <Row>
+            <Col>
+              <div ref="localMedia" />{' '}
+            </Col>
+            <Col>2 of 2</Col>
+          </Row>
+        </Container>
       </div>
     ) : (
       ''
