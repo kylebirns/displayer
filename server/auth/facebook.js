@@ -1,7 +1,7 @@
 const passport = require('passport')
 const router = require('express').Router()
 const {User} = require('../db/models')
-const FacebookStrategy = require('passport-facebook')
+const FacebookStrategy = require('passport-facebook').Strategy
 module.exports = router
 
 if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
@@ -11,7 +11,7 @@ if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
     callbackURL: process.env.FACEBOOK_CALLBACK,
-    profileFields: ['id', 'displayName', 'picture', 'email']
+    profileFields: ['id', 'displayName', 'photos', 'email']
   }
 
   passport.use(
@@ -23,8 +23,24 @@ if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
     ) {
       const facebookId = profile.id
       const name = profile.displayName
-      const email = profile.email
+      //this is not getting email
+      const email = profile.emails[0].value
+      // will this get profile picture?
       const avatar = profile.photos ? profile.photos[0].value : undefined
+
+      //   const userEmail = User.findOne({
+      //       where: {email}
+      //   })
+
+      //   if (userEmail) {
+      //     User.findOrCreate({
+      //         where: {email},
+      //         defaults: {avatar, facebookId}
+      //       }).then((err, user) => {
+      //         return cb(err, user)
+      //       })
+      //   }
+
       User.findOrCreate({
         where: {facebookId},
         defaults: {name, email, avatar}
@@ -37,7 +53,6 @@ if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
   router.get(
     '/',
     passport.authenticate('facebook', {
-      authType: 'rerequest',
       scope: ['email']
     })
   )

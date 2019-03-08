@@ -4,6 +4,8 @@ const router = require('express').Router()
 var faker = require('faker')
 module.exports = router
 
+//******* Need to replace identity with user at some point *******/
+
 // Used when generating any kind of Access Token
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID
 const twilioApiKey = process.env.TWILIO_API_KEY
