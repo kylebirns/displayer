@@ -1,5 +1,6 @@
 import VideoComponent from './videoComponent'
 import React, {Component} from 'react'
+import UserHome from './user-home'
 import AppBar from 'material-ui/AppBar'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme'
@@ -12,7 +13,15 @@ export default class VideoMain extends Component {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div>
-          <AppBar title="React Twilio Video" />
+          <div id="appBar-Container">
+            <AppBar
+              title={
+                <span id="UserHome">
+                  <UserHome />
+                </span>
+              }
+            />
+          </div>
           <VideoComponent />
         </div>
       </MuiThemeProvider>

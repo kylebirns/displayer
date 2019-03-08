@@ -10,16 +10,29 @@ label {
   display: block;
 }
 
-nav a {
-  display: inline-block;
-  margin: 1em;
+#appBar-Container {
+  display: flex;
 }
 
-form div {
-  margin: 1em;
-  display: inline-block;
+#UserHome {
+  text-align: center;
+}
+
+#logout {
+  display: flex;
+  align-items: flex-end;
+  align-content: flex-end;
+}
+
+/* Login Component */
+#login-title {
+  text-align: center;
 }
 
 #googleAuth {
-  padding-bottom: 10px;
+  margin: 5%;
+}
+
+#facebookAuth {
+  margin: 5%;
 }

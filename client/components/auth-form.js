@@ -2,32 +2,44 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {auth} from '../store'
 import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 /**
  * COMPONENT
  */
 const AuthForm = () => {
   return (
-    <div>
-      <div id="googleAuth">
-        <form method="get" action="/auth/google">
+    <Container>
+      <Row>
+        <Col />
+        <Col xs={6}>
           <div>
-            <Button variant="primary" size="lg" block>
-              Login with Google
-            </Button>
+            <h2 id="login-title">Please sign in</h2>
           </div>
-        </form>
-      </div>
-      <div id="facebookAuth">
-        <form method="get" action="/auth/facebook">
-          <div>
-            <Button variant="secondary" size="lg" block>
-              Login with Facebook
-            </Button>
+          <div id="googleAuth">
+            <form method="get" action="/auth/google">
+              <div>
+                <Button type="submit" variant="primary" size="lg" block>
+                  Login with Google
+                </Button>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
-    </div>
+          <div id="facebookAuth">
+            <form method="get" action="/auth/facebook">
+              <div>
+                <Button type="submit" variant="secondary" size="lg" block>
+                  Login with Facebook
+                </Button>
+              </div>
+            </form>
+          </div>
+        </Col>
+        <Col />
+      </Row>
+    </Container>
   )
 }
 

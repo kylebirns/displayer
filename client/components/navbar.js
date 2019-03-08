@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {Link} from 'react-router-dom'
 import {logout} from '../store'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Nav from 'react-bootstrap/Nav'
 
 const Navbar = ({handleClick, isLoggedIn}) => (
   <div>
@@ -11,10 +14,19 @@ const Navbar = ({handleClick, isLoggedIn}) => (
       {isLoggedIn && (
         <div>
           {/* The navbar will show these links after you log in */}
-          <Link to="/home">Home</Link>
-          <a href="#" onClick={handleClick}>
-            Logout
-          </a>
+          <Container>
+            <Row>
+              <Col />
+              <Col xs={6} />
+              <Col>
+                <Nav.Item>
+                  <Nav.Link id="logout" variant="primary" onClick={handleClick}>
+                    Logout
+                  </Nav.Link>
+                </Nav.Item>
+              </Col>
+            </Row>
+          </Container>
         </div>
       )}
     </nav>
