@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Video from 'twilio-video'
 import axios from 'axios'
 import RaisedButton from 'material-ui/RaisedButton'
+import Button from 'react-bootstrap/Button'
 import TextField from 'material-ui/TextField'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import {first} from 'lodash'
@@ -140,13 +141,39 @@ export default class VideoComponent extends Component {
           track.stop()
         })
       }
-      //Added
-      this.stopScreenTrack()
       this.detachParticipantTracks(room.localParticipant)
       room.participants.forEach(this.detachParticipantTracks)
       this.setState({roomName: '', activeRoom: null})
       this.setState({hasJoinedRoom: false, localMediaAvailable: false})
     })
+  }
+
+  shareScreen = async () => {
+    try {
+      const {screenTrack} = this.state
+
+      if (!screenTrack) {
+        const localVideoTrack = await Video.createLocalVideoTrack()
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: true
+        })
+        const newScreenTrack = first(stream.getVideoTracks())
+
+        this.setState({
+          screenTrack: new Video.LocalVideoTrack(newScreenTrack)
+        })
+
+        this.state.activeRoom.localParticipant.publishTrack(newScreenTrack)
+        this.state.activeRoom.localParticipant.unpublishTrack(localVideoTrack)
+      } else {
+        this.state.activeRoom.localParticipant.unpublishTrack(screenTrack)
+        this.state.activeRoom.localParticipant.publishTrack(localVideoTrack)
+        // this.stopScreenTrack()
+      }
+    } catch (error) {
+      // this.stopScreenTrack()
+      alert(error.message)
+    }
   }
 
   leaveRoom() {
@@ -158,7 +185,7 @@ export default class VideoComponent extends Component {
     })
   }
 
-  stopScreenTrack = () => this.stopTrack('screenTrack')
+  // stopScreenTrack = () => this.stopTrack('screenTrack')
 
   detachTracks(tracks) {
     tracks.forEach(track => {
@@ -198,9 +225,9 @@ export default class VideoComponent extends Component {
           onClick={this.leaveRoom}
         />
         {/* Sharing screen */}
-        <RaisedButton onClick={() => this.shareScreen()}>
+        <Button variant="secondary" onClick={() => this.shareScreen()}>
           {this.state.isScreenSharingEnabled ? 'Stop sharing' : 'Start sharing'}
-        </RaisedButton>
+        </Button>
       </div>
     ) : (
       <RaisedButton label="Join Room" primary={true} onClick={this.joinRoom} />

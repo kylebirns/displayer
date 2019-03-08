@@ -34,11 +34,11 @@ shareScreen = async () => {
         screenTrack: new Video.LocalVideoTrack(newScreenTrack)
       })
 
-      room.localParticipant.publishTrack(newScreenTrack)
-      room.localParticipant.unpublishTrack(localVideoTrack)
+      activeRoom.localParticipant.publishTrack(newScreenTrack)
+      activeRoom.localParticipant.unpublishTrack(localVideoTrack)
     } else {
-      room.localParticipant.unpublishTrack(screenTrack)
-      room.localParticipant.publishTrack(localVideoTrack)
+      activeRoom.localParticipant.unpublishTrack(screenTrack)
+      activeRoom.localParticipant.publishTrack(localVideoTrack)
       this.stopScreenTrack()
     }
   } catch (error) {
@@ -49,3 +49,6 @@ shareScreen = async () => {
     })
   }
 }
+
+// navigator.mediaDevices.getDisplayMedia is not a function
+// stop is not set up either

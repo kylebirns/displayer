@@ -23,30 +23,17 @@ if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
     ) {
       const facebookId = profile.id
       const name = profile.displayName
-      //this is not getting email
       const email = profile.emails[0].value
-      // will this get profile picture?
       const avatar = profile.photos ? profile.photos[0].value : undefined
-
-      //   const userEmail = User.findOne({
-      //       where: {email}
-      //   })
-
-      //   if (userEmail) {
-      //     User.findOrCreate({
-      //         where: {email},
-      //         defaults: {avatar, facebookId}
-      //       }).then((err, user) => {
-      //         return cb(err, user)
-      //       })
-      //   }
 
       User.findOrCreate({
         where: {facebookId},
         defaults: {name, email, avatar}
-      }).then((err, user) => {
-        return cb(err, user)
       })
+        .then(([user]) => {
+          return cb(null, user)
+        })
+        .catch(cb)
     })
   )
 
@@ -61,6 +48,7 @@ if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
     '/callback',
     passport.authenticate('facebook', {failureRedirect: '/login'}),
     function(req, res) {
+      console.log('got here')
       // Successful authentication, redirect home.
       res.redirect('/video')
     }
