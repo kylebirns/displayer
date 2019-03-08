@@ -22,16 +22,25 @@ if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
       cb
     ) {
       const facebookId = profile.id
-      // const name = profile.displayName
-      // const email = profile.email
-      // const avatar = profile.photos ? profile.photos[0].value : undefined
-      User.findOrCreate({where: {facebookId}}).then((err, user) => {
+      const name = profile.displayName
+      const email = profile.email
+      const avatar = profile.photos ? profile.photos[0].value : undefined
+      User.findOrCreate({
+        where: {facebookId},
+        defaults: {name, email, avatar}
+      }).then((err, user) => {
         return cb(err, user)
       })
     })
   )
 
-  router.get('/', passport.authenticate('facebook'))
+  router.get(
+    '/',
+    passport.authenticate('facebook', {
+      authType: 'rerequest',
+      scope: ['email']
+    })
+  )
 
   router.get(
     '/callback',
