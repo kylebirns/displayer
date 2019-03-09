@@ -20,13 +20,11 @@ class Routes extends Component {
       <Switch>
         {/* Routes placed here are available to all visitors */}
         <Route path="/login" component={Login} />
-        {/* Just here for testing */}
-        <Route path="/video" component={VideoMain} />
-        {/* Just here for testing */}
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route path="/home" component={UserHome} />
+            <Route path="/video" component={VideoMain} />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}

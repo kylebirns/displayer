@@ -1,5 +1,5 @@
 {
-  "name": "Desktop Capture",
+  "name": "Desktop Capture 2",
   "description":
     "Allows you to capture your desktop for use in video applications",
   "version": "0.1.0",
@@ -11,5 +11,5 @@
   "externally_connectable": {
     "matches": ["*://localhost/*"]
   },
-  "permissions": ["desktopCapture"]
+  "permissions": ["desktopCapture", "tabs"]
 }

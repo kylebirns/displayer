@@ -4,8 +4,7 @@ import axios from 'axios'
 import RaisedButton from 'material-ui/RaisedButton'
 import Button from 'react-bootstrap/Button'
 import TextField from 'material-ui/TextField'
-import {Card, CardHeader, CardText} from 'material-ui/Card'
-import {first} from 'lodash'
+import {Card, CardText} from 'material-ui/Card'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -160,29 +159,34 @@ export default class VideoComponent extends Component {
     })
   }
 
-  shareScreen = () => {
-    let extensionId = process.env.EXTENSION_ID
-    return new Promise((resolve, reject) => {
-      const request = {
-        sources: ['screen']
-      }
-      chrome.runtime.sendMessage(extensionId, request, response => {
-        if (response && response.type === 'success') {
-          resolve({streamId: response.streamId})
-        } else {
-          reject(new Error('Could not get stream'))
+  getUserScreen() {
+    var extensionId = 'ahkedldcjcpleakgpocoppmjamkhjogg'
+    if (!canScreenShare()) {
+      return
+    }
+    if (isChrome()) {
+      return new Promise((resolve, reject) => {
+        const request = {
+          sources: ['screen']
         }
-      })
-    }).then(response => {
-      return navigator.mediaDevices.getUserMedia({
-        video: {
-          mandatory: {
-            chromeMediaSource: 'desktop',
-            chromeMediaSourceId: response.streamId
+        chrome.runtime.sendMessage(extensionId, request, response => {
+          if (response && response.type === 'success') {
+            resolve({streamId: response.streamId})
+          } else {
+            reject(new Error('Could not get stream'))
           }
-        }
+        })
+      }).then(response => {
+        return navigator.mediaDevices.getUserMedia({
+          video: {
+            mandatory: {
+              chromeMediaSource: 'desktop',
+              chromeMediaSourceId: response.streamId
+            }
+          }
+        })
       })
-    })
+    }
   }
 
   detachTracks(tracks) {
@@ -210,7 +214,10 @@ export default class VideoComponent extends Component {
             <Col>
               <div ref="localMedia" />{' '}
             </Col>
-            <Col>2 of 2</Col>
+            <Col>
+              Screen Share to go here
+              <div className="flex-item" ref="screenShare" id="remote-media" />
+            </Col>
           </Row>
         </Container>
       </div>
@@ -230,7 +237,23 @@ export default class VideoComponent extends Component {
           onClick={this.leaveRoom}
         />
         {/* Sharing screen */}
-        <Button variant="secondary" onClick={() => this.shareScreen()}>
+        <Button
+          variant="secondary"
+          onClick={() =>
+            this.getUserScreen().then(function(stream) {
+              this.setState({
+                screenTrack: stream.getVideoTracks()[0],
+                isScreenSharingEnabled: true
+              })
+              this.state.activeRoom.localParticipant.publishTrack(
+                this.state.screenTrack
+              )
+
+              // document.getElementById('button-share-screen').style.display = 'none';
+              // document.getElementById('button-unshare-screen').style.display = 'inline';
+            })
+          }
+        >
           {this.state.isScreenSharingEnabled ? 'Stop sharing' : 'Start sharing'}
         </Button>
       </div>
@@ -267,4 +290,12 @@ export default class VideoComponent extends Component {
       </Card>
     )
   }
+}
+
+function isChrome() {
+  return 'chrome' in window
+}
+
+function canScreenShare() {
+  return isChrome()
 }

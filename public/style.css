@@ -36,3 +36,13 @@ label {
 #facebookAuth {
   margin: 5%;
 }
+
+.flex-item {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#remote-media {
+  border-radius: 50%;
+  flex-wrap: wrap;
+}
