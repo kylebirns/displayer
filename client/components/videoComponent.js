@@ -29,6 +29,7 @@ export default class VideoComponent extends Component {
     this.leaveRoom = this.leaveRoom.bind(this)
     this.detachTracks = this.detachTracks.bind(this)
     this.detachParticipantTracks = this.detachParticipantTracks.bind(this)
+    this.getUserScreen = this.getUserScreen.bind(this)
   }
 
   handleRoomNameChange(e) {
@@ -216,7 +217,9 @@ export default class VideoComponent extends Component {
             </Col>
             <Col>
               Screen Share to go here
-              <div className="flex-item" ref="screenShare" id="remote-media" />
+              <div className="flex-item" id="remote-media">
+                {this.state.screenTrack}
+              </div>
             </Col>
           </Row>
         </Container>
@@ -240,7 +243,8 @@ export default class VideoComponent extends Component {
         <Button
           variant="secondary"
           onClick={() =>
-            this.getUserScreen().then(function(stream) {
+            this.getUserScreen().then(stream => {
+              console.log(stream.getVideoTracks()[0])
               this.setState({
                 screenTrack: stream.getVideoTracks()[0],
                 isScreenSharingEnabled: true
@@ -248,9 +252,6 @@ export default class VideoComponent extends Component {
               this.state.activeRoom.localParticipant.publishTrack(
                 this.state.screenTrack
               )
-
-              // document.getElementById('button-share-screen').style.display = 'none';
-              // document.getElementById('button-unshare-screen').style.display = 'inline';
             })
           }
         >
