@@ -168,7 +168,7 @@ export default class VideoComponent extends Component {
     if (isChrome()) {
       return new Promise((resolve, reject) => {
         const request = {
-          sources: ['screen']
+          sources: ['window', 'screen', 'tab']
         }
         chrome.runtime.sendMessage(extensionId, request, response => {
           if (response && response.type === 'success') {
@@ -216,10 +216,7 @@ export default class VideoComponent extends Component {
               <div ref="localMedia" />{' '}
             </Col>
             <Col>
-              Screen Share to go here
-              <div className="flex-item" id="remote-media">
-                {this.state.screenTrack}
-              </div>
+              <div ref="remoteMedia" id="remote-media" />
             </Col>
           </Row>
         </Container>
@@ -242,18 +239,25 @@ export default class VideoComponent extends Component {
         {/* Sharing screen */}
         <Button
           variant="secondary"
-          onClick={() =>
-            this.getUserScreen().then(stream => {
-              console.log(stream.getVideoTracks()[0])
-              this.setState({
-                screenTrack: stream.getVideoTracks()[0],
-                isScreenSharingEnabled: true
+          onClick={() => {
+            if (!this.state.isScreenSharingEnabled) {
+              this.getUserScreen().then(stream => {
+                console.log(stream.getVideoTracks()[0])
+                this.setState({
+                  screenTrack: stream.getVideoTracks()[0],
+                  isScreenSharingEnabled: true
+                })
+                this.state.activeRoom.localParticipant.publishTrack(
+                  this.state.screenTrack
+                )
               })
-              this.state.activeRoom.localParticipant.publishTrack(
+            } else {
+              this.state.activeRoom.localParticipant.unpublishTrack(
                 this.state.screenTrack
               )
-            })
-          }
+              this.setState({screenTrack: null, isScreenSharingEnabled: false})
+            }
+          }}
         >
           {this.state.isScreenSharingEnabled ? 'Stop sharing' : 'Start sharing'}
         </Button>
@@ -285,7 +289,7 @@ export default class VideoComponent extends Component {
             {/* 
               The following div element shows all remote media (other participant’s tracks) 
             */}
-            <div className="flex-item" ref="remoteMedia" id="remote-media" />
+            {/* <div className="flex-item" ref="remoteMedia" id="remote-media" /> */}
           </div>
         </CardText>
       </Card>
