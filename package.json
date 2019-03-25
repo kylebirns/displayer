@@ -47,7 +47,7 @@
     "faker": "^4.1.0",
     "history": "^4.6.3",
     "material-ui": "^0.20.2",
-    "morgan": "^1.8.1",
+    "morgan": ">=1.9.1",
     "passport": "^0.3.2",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth": "^1.0.0",
