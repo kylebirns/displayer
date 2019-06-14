@@ -13,5 +13,5 @@ From there, just follow your bliss.
 
 ## Resources
 
-https://www.twilio.com/blog/2018/03/video-chat-react.html 
-https://www.twilio.com/blog/2018/01/screen-sharing-twilio-video.html
+- https://www.twilio.com/blog/2018/03/video-chat-react.html 
+- https://www.twilio.com/blog/2018/01/screen-sharing-twilio-video.html
